@@ -1,0 +1,43 @@
+1) Tạo 2 folder chứa 2 source code
+    nginx: /usr/share/nginx/html
+    apache: /var/www/html
+2) Tạo 1 folder proxy chứa máy trạm reserve proxy
+Trong máy trạm này, tạo 2 folder và các file sau:
+    includes: chứa file conf, gồm 
+        proxy.conf: thông tin máy trạm 
+        ssl.config: config của ssl
+    ssl: chứa crt và key (chứng chỉ ssl) của các source cần connect, vd sourceA.crt và sourceA.key
+        openssl genrsa 2048 > host.key
+        openssl req -new -x509 -nodes -sha256 -days 365 -key host.key -out host.crt
+    404.html: link dẫn đến html khi not found
+    default.conf: conf như htaccess, chịu trách nhiệm điều hướng request
+    docker-compose.yml: tạo server proxy, connect các network của các source 
+        (docker network ls, dùng để get tên network đưa vào yml)
+        (docker ps, truyền vào container id name trong proxy_pass)
+    dockerfile: tạo server nginx, copy 2 folder trên và files (404, default.conf) vào server proxy
+        
+Win
+C:\WINDOWS\system32\drivers\etc
+
+Ubuntu
+/etc/nginx/conf.d/
+
+Để cấu hình được 1 server nhiều domain thì:
+1. Trỏ tất cả tên miền vào 1 ip
+2. Khi tới ip, reverse-proxy sẽ chịu trách nhiệm phân phối
+đến các web nhất định
+
+reverse-proxy: chặn(cửa) trước của server, như middleware
+Forward proxy: chặn trước của client
+
+docker-compose up --build --force-recreate --no-deps
+
+docker network ls
+docker network inspect NameOfYourNetwork
+ docker inspect  a7e683c458a8
+
+* * * * * root cd /app && php artisan schedule:run >> /dev/null 2>&1
+Lưu ý: có chữ root
+service cron start/status/restart
+
+host.docker.internal sẽ config ip được public trong etc\hosts vd 192.168.1.2 host.docker.internal
